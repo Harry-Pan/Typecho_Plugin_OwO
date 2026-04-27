@@ -197,14 +197,22 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 // 获取按钮和下拉栏的尺寸及位置（相对于视口）
                 var btnRect = button.getBoundingClientRect();
                 var dropdownHeight = dropdown.offsetHeight;
+                console.log(dropdownHeight);
                 var dropdownWidth = dropdown.offsetWidth;
-                var viewportHeight = window.innerHeight;
-                var viewportWidth = window.innerWidth;
+                console.log(dropdownWidth);
 
-                // 计算下方剩余空间
-                var spaceBelow = viewportHeight - btnRect.bottom;
+                // 获取页面总高度
+                var docHeight = document.documentElement.scrollHeight;
+                console.log(docHeight);
+                // 按钮底部相对于文档顶部的绝对位置
+                var btnBottomAbs = btnRect.bottom + window.scrollY;
+                console.log(btnBottomAbs);
+                // 按钮下方相对于页面底部的剩余空间
+                var spaceBelowPage = docHeight - btnBottomAbs;
+                console.log(spaceBelowPage);
 
-                if (spaceBelow >= dropdownHeight) {
+
+                if (spaceBelowPage >= dropdownHeight) {
                     // 下方空间足够：恢复默认样式（让 CSS 自行处理）
                     dropdown.style.position = '';
                     dropdown.style.top = '';
@@ -212,21 +220,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     dropdown.style.right = '';
                     dropdown.style.bottom = '';
                 } else {
-                    // 下方空间不足：改为 fixed 定位，显示在右侧并尽量靠下（避免撑开页面）
+                    // 下方空间不足：改为 fixed 定位，显示在右侧并尽量靠下（但优先靠近按钮）
                     dropdown.style.position = 'fixed';
-                    // 垂直方向：底部对齐视口底部
-                    var topPos = viewportHeight - dropdownHeight;
+
+                    // 垂直方向：优先对齐按钮顶部，同时确保不超出视口底部
+                    var topPos = btnRect.top;
+                    if (topPos + dropdownHeight > docHeight) {
+                        topPos = topPos - dropdownHeight-dropdownHeight-20;
+                    }
                     if (topPos < 0) topPos = 0;
-                    dropdown.style.top = topPos + 'px';
+                    dropdown.style.top = dropdownHeight+'px';
                     dropdown.style.bottom = 'auto';
 
                     // 水平方向：按钮右侧 + 8px 间距
                     var leftPos = btnRect.right + 8;
-                    if (leftPos + dropdownWidth > viewportWidth) {
-                        // 右侧空间不足，改到左侧
-                        leftPos = btnRect.left - dropdownWidth - 8;
-                        if (leftPos < 0) leftPos = 8;
-                    }
                     dropdown.style.left = leftPos + 'px';
                     dropdown.style.right = 'auto';
                 }
