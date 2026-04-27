@@ -11,27 +11,31 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
 /**
  * 以插件的形式为你的博客提供OwO表情支持。自带将中文名称的表情包转码并生成索引的功能。
  *
- * @package OwO表情插件
+ * @package TypechoPluginOwO
  * @author HarryPan
  * @version 1.0.1
  * @link https://github.com/Harry-Pan/Typecho_Plugin_OwO
  */
- class Typecho_Plugin_OwO implements Typecho_Plugin_Interface {
+ class TypechoPluginOwO_Plugin implements Typecho_Plugin_Interface {
     /**
      * 激活插件方法,如果激活失败,直接抛出异常
      */
     public static function activate()
     {
-        Typecho_Plugin::factory('Widget_Archive')->header = array('Typecho_Plugin_OwO', 'header');
-        Typecho_Plugin::factory('Widget_Archive')->footer = array('Typecho_Plugin_OwO', 'footer');
-        Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = array('Typecho_Plugin_OwO','contentEx');
-        Typecho_Plugin::factory('Widget_Abstract_Contents')->excerptEx = array('Typecho_Plugin_OwO', 'contentEx');
-        Typecho_Plugin::factory('Widget_Abstract_Comments')->contentEx = array('Typecho_Plugin_OwO','commentcontentEx');
-        Helper::addRoute("route_ExSearch","/Typecho_Plugin_OwO","Typecho_Plugin_OwO_Action",'action');
+        try{
+        Typecho_Plugin::factory('Widget_Archive')->header = array('TypechoPluginOwO_Plugin', 'header');
+        Typecho_Plugin::factory('Widget_Archive')->footer = array('TypechoPluginOwO_Plugin', 'footer');
+        Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = array('TypechoPluginOwO_Plugin','contentEx');
+        Typecho_Plugin::factory('Widget_Abstract_Contents')->excerptEx = array('TypechoPluginOwO_Plugin', 'contentEx');
+        Typecho_Plugin::factory('Widget_Abstract_Comments')->contentEx = array('TypechoPluginOwO_Plugin','commentcontentEx');
+        Helper::addRoute("OwO","/TypechoPluginOwO_Plugin","TypechoPluginOwO_Action",'action');
         //如果你的主题已经在文章编辑页面加入了OwO按钮，可以根据情况注释掉以下三行
-        Typecho_Plugin::factory('admin/write-post.php')->bottom = array('Typecho_Plugin_OwO', 'addButton');
-        Typecho_Plugin::factory('admin/write-page.php')->bottom = array('Typecho_Plugin_OwO', 'addButton');
-        Typecho_Plugin::factory('admin/write-page.php')->footer = array('Typecho_Plugin_OwO', 'footer');
+        Typecho_Plugin::factory('admin/write-post.php')->bottom = array('TypechoPluginOwO_Plugin', 'addButton');
+        Typecho_Plugin::factory('admin/write-page.php')->bottom = array('TypechoPluginOwO_Plugin', 'addButton');
+        Typecho_Plugin::factory('admin/write-page.php')->footer = array('TypechoPluginOwO_Plugin', 'footer');
+        } catch (\Throwable $e) {
+        die('<pre>激活插件时发生错误：' . $e->getMessage() . "\n" . $e->getTraceAsString() . '</pre>');
+    }
     }
 
     /**
@@ -61,17 +65,17 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
 
     /**
      * 解析 OwO表情
-     * 
+     *
      * @return string
      */
     static public function parseOwO($string){
         $string = preg_replace_callback("/\[owo_\s*(.*?)\s*\]/is",
-            array('Typecho_Plugin_OwO', 'parseOwOCallback'), $string);
+            array('TypechoPluginOwO_Plugin', 'parseOwOCallback'), $string);
         return $string;
     }
     /**
      * 表情回调函数
-     * 
+     *
      * @return string
      */
     private static function parseOwOCallback($match){
@@ -81,22 +85,22 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
         $owopath=strstr($owopath,'_',true);
         str_replace('%', '', urlencode($owoname));
 
-        return '<img class="owobiaoqing" src="/usr/plugins/Typecho_Plugin_OwO/owo/biaoqing/'.$owopath.'/'.$owoname. '.png">';
+        return '<img class="owobiaoqing" src="/usr/plugins/TypechoPluginOwO/owo/biaoqing/'.$owopath.'/'.$owoname. '.png">';
     }
 
     /**
      * 解析评论中的OwO表情
-     * 
+     *
      * @return string
      */
-    static public function parseOwOCOmment($string){
+    static public function parseOwOComment($string){
         $string = preg_replace_callback("/\[owo_\s*(.*?)\s*\]/is",
-            array('Typecho_Plugin_OwO', 'parseOwOCallbackComment'), $string);
+            array('TypechoPluginOwO_Plugin', 'parseOwOCallbackComment'), $string);
         return $string;
     }
     /**
      * 评论表情回调函数
-     * 
+     *
      * @return string
      */
     private static function parseOwOCallbackComment($match){
@@ -111,17 +115,17 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
 
     /**
      * 引入OwO
-     * 
+     *
      * @return void
      */
     public static function header(){
-        $imagesize = Helper::options()->plugin('Typecho_Plugin_OwO')->imagesize;
+        $imagesize = Helper::options()->plugin('TypechoPluginOwO')->imagesize;
         echo '<script src="';
-        Helper::options()->pluginUrl('/Typecho_Plugin_OwO/owo/owo.js');
+        Helper::options()->pluginUrl('/TypechoPluginOwO/owo/owo.js');
         echo '"></script>';
 
         echo '<link rel="stylesheet" href="';
-        Helper::options()->pluginUrl('/Typecho_Plugin_OwO/owo/owo.min.css');
+        Helper::options()->pluginUrl('/TypechoPluginOwO/owo/owo.min.css');
         echo '" />';
         echo '<style>#custom-field textarea,#custom-field input{width:100%}
         .Typecho_Plugin_OwO span{background:none!important;width:unset!important;height:unset!important}
@@ -134,7 +138,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
             max-width:-webkit-calc(20% - 10px);
             max-width:calc(20% - 10px)
         }
-        @media screen and (max-width:767px){    
+        @media screen and (max-width:767px){
             .comment-info-input{flex-direction:column;}
             .comment-info-input input{max-width:100%;margin-top:5px}
             #comments .comment-author .avatar{
@@ -165,7 +169,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
 
     /**
      * 新建OwO与自定义元素
-     * 
+     *
      * @return void
      */
     public static function footer(){
@@ -176,7 +180,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
                 logo: 'OωO',
                 container: document.getElementsByClassName('Typecho_Plugin_OwO')[0],
                 target: document.getElementsByClassName('input-area')[0],
-                api: '<?php Helper::options()->pluginUrl('/Typecho_Plugin_OwO/owo/list.json'); ?>',
+                api: '<?php Helper::options()->pluginUrl('/TypechoPluginOwO/owo/list.json'); ?>',
                 position: 'down',
                 width: '400px',
                 maxHeight: '250px'
@@ -187,18 +191,18 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
 class owoimg extends HTMLElement {
     constructor() {
     super();
-    const srcd="/usr/plugins/Typecho_Plugin_OwO/owo/biaoqing/"+this.getAttribute("srcd");
+    const srcd="/usr/plugins/TypechoPluginOwO/owo/biaoqing/"+this.getAttribute("srcd");
     const templateDom = document.createElement("template");
         templateDom.innerHTML = `
-            <img style="display: inline-block;height:<?php echo Helper::options()->plugin('Typecho_Plugin_OwO')->imagesize; ?>;vertical-align: bottom;margin: 0;
+            <img style="display: inline-block;height:<?php echo Helper::options()->plugin('TypechoPluginOwO')->imagesize; ?>;vertical-align: bottom;margin: 0;
     box-shadow: none;" src="`+srcd+`">
         `;
 
         const divTemplate = templateDom.content;
-        
+
         // open 表示可以通过页面内的 JavaScript 方法来获取 Shadow DOM
-        let shadowDom = this.attachShadow({ mode: "open" }); 
-        
+        let shadowDom = this.attachShadow({ mode: "open" });
+
         shadowDom.append(divTemplate);
     }
 }
@@ -209,22 +213,22 @@ customElements.define("owo-img",owoimg);
 
     /**
      * 编辑界面添加Button
-     * 
+     *
      * @return void
      */
     public static function addButton(){
         echo '<script src="';
-        Helper::options()->pluginUrl('/Typecho_Plugin_OwO/owo/owo.js');
+        Helper::options()->pluginUrl('/TypechoPluginOwO/owo/owo.js');
         echo '"></script>';
 
         echo '<script src="';
-        Helper::options()->pluginUrl('/Typecho_Plugin_OwO/owo/editor.js');
+        Helper::options()->pluginUrl('/TypechoPluginOwO/owo/editor.js');
         echo '"></script>';
 
         echo '<link rel="stylesheet" href="';
-        Helper::options()->pluginUrl('/Typecho_Plugin_OwO/owo/owo.min.css');
+        Helper::options()->pluginUrl('/TypechoPluginOwO/owo/owo.min.css');
         echo '" />';
-       
+
         echo '<style>#custom-field textarea,#custom-field input{width:100%}
         .Typecho_Plugin_OwO span{background:none!important;width:unset!important;height:unset!important}
         .Typecho_Plugin_OwO .OwO-body .OwO-items{
@@ -236,7 +240,7 @@ customElements.define("owo-img",owoimg);
             max-width:-webkit-calc(20% - 10px);
             max-width:calc(20% - 10px)
         }
-        @media screen and (max-width:767px){    
+        @media screen and (max-width:767px){
             .comment-info-input{flex-direction:column;}
             .comment-info-input input{max-width:100%;margin-top:5px}
             #comments .comment-author .avatar{
@@ -272,7 +276,7 @@ customElements.define("owo-img",owoimg);
     &lt;span class=&quot;Typecho_Plugin_OwO&quot; aria-label=&quot;表情按钮&quot; role="button"&gt;&lt;/span&gt;
 </p>
 <p>只要class为Typecho_Plugin_OwO，该元素便会与表情按钮绑定。</p>
-<p>在新增/删除表情包后请<a href="<?php Helper::options()->index('/Typecho_Plugin_OwO?action=rebuild'); ?>" target="_blank">重建索引</a>。</p>
+<p>在新增/删除表情包后请<a href="<?php Helper::options()->index('/TypechoPluginOwO_Plugin?action=rebuild'); ?>" target="_blank">重建索引</a>。</p>
 <?php
         $form->addInput(new Typecho_Widget_Helper_Form_Element_Text('imagesize', NULL, '3.5em', '设置表情包尺寸(单位采用css单位，默认3.5em)'));
 

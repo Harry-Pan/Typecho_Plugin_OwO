@@ -28,7 +28,7 @@ function insertAtCursor(myField, myValue) {
         myField.selectionStart = startPos + myValue.length;
         myField.selectionEnd = startPos + myValue.length;
     } else {
-        
+
         myField.value += myValue;
         myField.focus();
     }
@@ -55,7 +55,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 position: 'down',
                 width: '100%',
                 maxHeight: '250px',
-                api: '/usr/plugins/Typecho_Plugin_OwO/owo/list.json'
+                api: '/usr/plugins/TypechoPluginOwO/owo/list.json'
             };
             for (var defaultKey in defaultOption) {
                 if (defaultOption.hasOwnProperty(defaultKey) && !option.hasOwnProperty(defaultKey)) {
@@ -120,6 +120,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 html += '\n                    </ul>\n                </div>\n            </div>\n            ';
                 this.container.innerHTML = html;
 
+                // 新增：保存下拉栏主体元素（用于动态调整位置）
+                this.body = this.container.getElementsByClassName('OwO-body')[0];
+
                 // bind event
                 this.logo = this.container.getElementsByClassName('OwO-logo')[0];
                 this.logo.addEventListener('click', function () {
@@ -169,8 +172,63 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             value: function toggle() {
                 if (this.container.classList.contains('OwO-open')) {
                     this.container.classList.remove('OwO-open');
+                    // 恢复下拉栏的原始样式（清除内联样式）
+                    if (this.body) {
+                        this.body.style.position = '';
+                        this.body.style.top = '';
+                        this.body.style.left = '';
+                        this.body.style.right = '';
+                        this.body.style.bottom = '';
+                    }
                 } else {
                     this.container.classList.add('OwO-open');
+                    // 调整位置以避免底部空白
+                    this._adjustPosition();
+                }
+            }
+        }, {
+            key: '_adjustPosition',
+            value: function _adjustPosition() {
+                // 获取触发按钮和下拉栏主体
+                var button = this.logo;
+                var dropdown = this.body;
+                if (!button || !dropdown) return;
+
+                // 获取按钮和下拉栏的尺寸及位置（相对于视口）
+                var btnRect = button.getBoundingClientRect();
+                var dropdownHeight = dropdown.offsetHeight;
+                var dropdownWidth = dropdown.offsetWidth;
+                var viewportHeight = window.innerHeight;
+                var viewportWidth = window.innerWidth;
+
+                // 计算下方剩余空间
+                var spaceBelow = viewportHeight - btnRect.bottom;
+
+                if (spaceBelow >= dropdownHeight) {
+                    // 下方空间足够：恢复默认样式（让 CSS 自行处理）
+                    dropdown.style.position = '';
+                    dropdown.style.top = '';
+                    dropdown.style.left = '';
+                    dropdown.style.right = '';
+                    dropdown.style.bottom = '';
+                } else {
+                    // 下方空间不足：改为 fixed 定位，显示在右侧并尽量靠下（避免撑开页面）
+                    dropdown.style.position = 'fixed';
+                    // 垂直方向：底部对齐视口底部
+                    var topPos = viewportHeight - dropdownHeight;
+                    if (topPos < 0) topPos = 0;
+                    dropdown.style.top = topPos + 'px';
+                    dropdown.style.bottom = 'auto';
+
+                    // 水平方向：按钮右侧 + 8px 间距
+                    var leftPos = btnRect.right + 8;
+                    if (leftPos + dropdownWidth > viewportWidth) {
+                        // 右侧空间不足，改到左侧
+                        leftPos = btnRect.left - dropdownWidth - 8;
+                        if (leftPos < 0) leftPos = 8;
+                    }
+                    dropdown.style.left = leftPos + 'px';
+                    dropdown.style.right = 'auto';
                 }
             }
         }, {
@@ -181,7 +239,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     itemsShow.classList.remove('OwO-items-show');
                 }
                 this.container.getElementsByClassName('OwO-items')[index].classList.add('OwO-items-show');
-                
+
                 if(!this.container.getElementsByClassName('OwO-items')[index].classList.contains('OwO-image-items-load')
                     &&this.container.getElementsByClassName('OwO-items')[index].classList.contains('OwO-items-image'))
                 {

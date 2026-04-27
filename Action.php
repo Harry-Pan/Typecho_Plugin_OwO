@@ -31,11 +31,11 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 				$this->type=$type;
 			}
 		}
-class Typecho_Plugin_OwO_Action extends Widget_Abstract_Contents implements Widget_Interface_Do
+class TypechoPluginOwO_Action extends Widget_Abstract_Contents implements Widget_Interface_Do
 {
     /**
      * 返回请求的 JSON
-     * 
+     *
      * @access public
      */
     public function action(){
@@ -54,9 +54,9 @@ class Typecho_Plugin_OwO_Action extends Widget_Abstract_Contents implements Widg
         }
     }
     public static function rebuild(){
-//     	$oldjson=json_decode(file_get_contents('./usr/plugins/Typecho_Plugin_OwO/owo/list.json'));
+//     	$oldjson=json_decode(file_get_contents('./usr/plugins/TypechoPluginOwO/owo/list.json'));
         $oldjson=null;
-	    $dir = './usr/plugins/Typecho_Plugin_OwO/owo/biaoqing/';
+	    $dir = './usr/plugins/TypechoPluginOwO/owo/biaoqing/';
 		$files = scandir($dir);
 	 	$json=new stdClass();
 	 	if($oldjson==null){
@@ -85,7 +85,7 @@ class Typecho_Plugin_OwO_Action extends Widget_Abstract_Contents implements Widg
 		        $json->{$file}=new OwOPackage();
 		        $json->{$file}->container=array();
 		        $json->{$file}->type="image";
-		        $json->{$file}->icon="<img style=\"width: 30px;height: 30px;object-fit:contain;margin: 5px 5px 0 0;\" src=\"/usr/plugins/Typecho_Plugin_OwO/owo/biaoqing/".$file."/icon.png\">";
+		        $json->{$file}->icon="<img style=\"width: 30px;height: 30px;object-fit:contain;margin: 5px 5px 0 0;\" src=\"/usr/plugins/TypechoPluginOwO/owo/biaoqing/".$file."/icon.png\">";
 		        $owodir=$dir.$file;
 		        echo $owodir;
 		        $owos=scandir($owodir);
@@ -94,7 +94,7 @@ class Typecho_Plugin_OwO_Action extends Widget_Abstract_Contents implements Widg
 				        // echo $owo . '<br>';
 				        if($owo!="icon.png"){
 					        $item=new OwOItem();
-					        $item->icon="<img class=\"biaoqing\" data-src=\"/usr/plugins/Typecho_Plugin_OwO/owo/biaoqing/".$file."/".$owo."\">";
+					        $item->icon="<img class=\"biaoqing\" data-src=\"/usr/plugins/TypechoPluginOwO/owo/biaoqing/".$file."/".$owo."\">";
 					        $item->text=substr($owo,0,strrpos($owo,'.'));
 					        $item->data='[owo_'.$file.'_'.$item->text.']';
 					        $item->type=substr($owo,strrpos($owo,'.'),-1);
@@ -110,7 +110,7 @@ class Typecho_Plugin_OwO_Action extends Widget_Abstract_Contents implements Widg
 	    }
 	    $encode=json_encode($json);
 	    // echo $encode;
-	    file_put_contents("./usr/plugins/Typecho_Plugin_OwO/owo/list.json", $encode);
+	    file_put_contents("./usr/plugins/TypechoPluginOwO/owo/list.json", $encode);
 	    echo '<br>';
 	}
 }

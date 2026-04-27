@@ -27,7 +27,7 @@ $(function() {
 		logo: "OωO",
 		container: document.getElementsByClassName("Typecho_Plugin_OwO")[0],
 		target: document.getElementById("text"),
-		api: "/usr/plugins/Typecho_Plugin_OwO/owo/list.json",
+		api: "/usr/plugins/TypechoPluginOwO/owo/list.json",
 		position: "down",
 		width: "400px",
 		maxHeight: "250px"
