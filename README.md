@@ -4,7 +4,7 @@
 
 自带为表情包生成索引的功能。
 
-[demo](https://www.harrypan.cn)
+[demo](https://www.harrypan.cn) [发布页](https://www.harrypan.cn/archives/1547/)
 
 ## 注意事项
 
@@ -34,8 +34,6 @@
 1. 进入本插件目录下的`Typecho_Plugin_OwO/owo/biaoqing`位置，按自己需求加入表情文件/移除不想要的表情文件，完成操作后请确保所有的表情文件夹依然符合[下文规范格式](#表情文件夹的格式)。
 
 2. 进入后台，进入本插件的配置页面，点击**重建索引**。
-
-   > 注意！执行**重建索引**操作会不可逆地修改``Typecho_Plugin_OwO/owo/biaoqing`目录下所有文件名称中带中文的表情文件的文件名。
 
 ### 为评论区配置表情按钮
 
