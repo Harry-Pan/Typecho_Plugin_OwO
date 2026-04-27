@@ -42,20 +42,20 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 (function () {
-    var OwO = function () {
-        function OwO(option) {
+    var Typecho_Plugin_OwO = function () {
+        function Typecho_Plugin_OwO(option) {
             var _this = this;
 
-            _classCallCheck(this, OwO);
+            _classCallCheck(this, Typecho_Plugin_OwO);
 
             var defaultOption = {
                 logo: 'OwO',
-                container: document.getElementsByClassName('OwO')[0],
+                container: document.getElementsByClassName('Typecho_Plugin_OwO')[0],
                 target: document.getElementsByTagName('textarea')[0],
                 position: 'down',
                 width: '100%',
                 maxHeight: '250px',
-                api: '/usr/plugins/OwOHP/owo/OwOHP.json'
+                api: '/usr/plugins/Typecho_Plugin_OwO/owo/list.json'
             };
             for (var defaultKey in defaultOption) {
                 if (defaultOption.hasOwnProperty(defaultKey) && !option.hasOwnProperty(defaultKey)) {
@@ -83,7 +83,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             xhr.send(null);
         }
 
-        _createClass(OwO, [{
+        _createClass(Typecho_Plugin_OwO, [{
             key: 'init',
             value: function init(option) {
                 var _this2 = this;
@@ -200,12 +200,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }
         }]);
 
-        return OwO;
+        return Typecho_Plugin_OwO;
     }();
 
     if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-        module.exports = OwO;
+        module.exports = Typecho_Plugin_OwO;
     } else {
-        window.OwO = OwO;
+        window.Typecho_Plugin_OwO = Typecho_Plugin_OwO;
     }
 })();
